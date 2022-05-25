@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nelsony Device Configuration</title>
+    <link rel="stylesheet" href="style.min.css">   
+    <style>
+        html {font-family: Arial; display: inline-block; text-align: center;}
+        p {font-size: large;}
+        body {font-size: large; color: white; max-width: 480px; margin:0px auto; padding-bottom: 25px;}
+    </style>    
+</head>
+
+<body style="background:#222">
+  <h1>Nelsony</h1>
+  <h2>Refrigeration Controller</h2>
+  <h4>Settings: </h4>
+    <form action="/setTemp" method="post">
+    <label for="fzrSetTemp">Freezer Set Temp: </label>
+    <input type="number" id="fzrSetTemp" name="fzrSetTemp" min="-20" max="32" step="1" value=%FREEZERSETTEMP%>
+    <input type="submit" value="Change">
+  </form> 
+  <br>  
+  <form action="/setTemp" method="post">
+    <label for="refSetTemp">Refrigerator Set Temp: </label>
+    <input type="number" id="refSetTemp" name="refSetTemp" min="32" max="55" step="1" value=%REFERSETTEMP%>
+    <input type="submit" value="Change">
+  </form>  
+  <br>
+    <label for="WiFi">Connect to WiFi Router </label>
+    <input type="checkbox" id="WiFi" name="WiFi" %WIFIBUTTON%> 
+    <br><br><br>
+  <form action="/set" method="post">
+    <label for="SSID">Enter SSID: </label>
+    <input type="text" name="SSID" value=%SSID_VALUE%  maxlength="32" id="SSID" %WIFISTATE% required>
+    <br><br>
+    <label for="PSWD">Enter Password: </label>
+    <input type="password" name="PSWD" value=%PSWD_VALUE%  maxlength="64" id="PSWD" %WIFISTATE%>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+    <br><br><br>
+  <form action="/fota" method="get">
+	<button id="fota">Update Firmware</button>
+  </form> 
+    <br><br><br>
+	<p>Version %VERSION_NUMBER%</p>  
+ <script>
+    document.getElementById('WiFi').onchange = function() 
+    {
+        if(this.checked==true)
+        {
+            document.getElementById("SSID").disabled=false;
+            document.getElementById("SSID").focus();
+            document.getElementById("PSWD").disabled=false;
+        }
+        else
+        {
+            document.getElementById("SSID").disabled=true;
+            document.getElementById("PSWD").disabled=true;
+        }
+    };
+    
+</script>  
+</body>
+</html>

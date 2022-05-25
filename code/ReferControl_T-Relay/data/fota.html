@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nelsony Device Update</title>
+    <link rel="stylesheet" href="style.min.css">   
+    <style>
+        html {font-family: Arial; display: inline-block; text-align: center;}
+        p {font-size: large;}
+        body {font-size: large; color: white; max-width: 600px; margin:0px auto; padding-bottom: 25px;}
+    </style>    
+</head>
+
+<body style="background:#222">
+  <h1>Nelsony</h1>
+  <h2>Engine Monitor</h2>
+  <h3>Firmware Update</h3>
+  <form method='POST' action='/manifest' enctype='multipart/form-data'>
+	<label for="manifest">Select manifest file:</label>
+	<input type='file' name='manifest' accept=".mft">
+	<br><br>
+	<input type='submit' value='Update'>
+  </form>
+  <form method='POST' action='/update' enctype='multipart/form-data'>
+	<br><br>
+	<label for="upddate">Select firmware file:</label>
+	<input type='file' name='update'  accept=".bin">
+	<br><br>
+	<input type='submit' value='Update'>
+  </form>
+ 
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Refrigeration Controller</title>
+    <script src="gauge.min.js"></script>
+    <link rel="stylesheet" href="style.min.css">    
+</head>
+
+<body style="background:#222">
+<div class="gauge-container">
+    <canvas data-type="linear-gauge"
+        data-width="120"
+        data-height="350"
+        data-border-radius="10"
+        data-borders="0"
+        data-bar-begin-circle="false"
+        data-color-plate='#222'
+        data-color-major-ticks='#f5f5f5'
+        data-color-minor-ticks='#ddd'
+        data-color-title='#fff'
+        data-color-units='#ccc'
+        data-color-numbers='#eee'
+        data-color-needle='rgba(240, 128, 128, 1)'
+        data-color-needle-end='rgba(255, 160, 122, .9)'
+        data-font-title-size="32"
+        data-title="Freezer Temp"
+        data-font-units-size="28"
+        data-units="Degrees F"
+        data-font-numbers-size="24"
+        data-minor-ticks="10"
+        data-value="0"
+        data-value-dec="0"
+        data-min-value="-20"
+        data-max-value="80"
+        data-major-ticks="-20, 0, 20, 40, 60, 80"
+        data-highlights='[
+            {"from": -20, "to": 10, "color": "blue"},
+            {"from": 10, "to": 28, "color": "green"},
+            {"from": 28, "to": 80, "color": "yellow"}
+        ]'
+        data-tick-side="right"
+        data-number-side='right'
+        data-needle-side="right"
+        data-bar-stroke-width="0"
+        data-value-box-border-radius="0"
+        data-animation="false"
+        data-value-text-shadow="false"
+        data-value-box="false"
+        ></canvas>
+    <canvas data-type="linear-gauge"
+        data-width="120"
+        data-height="350"
+        data-border-radius="10"
+        data-borders="false"
+        data-bar-begin-circle="false"
+        data-color-plate='#222'
+        data-color-major-ticks='#f5f5f5'
+        data-color-minor-ticks='#ddd'
+        data-color-title='#fff'
+        data-color-units='#ccc'
+        data-color-numbers='#eee'
+        data-color-needle='rgba(240, 128, 128, 1)'
+        data-color-needle-end='rgba(255, 160, 122, .9)'
+        data-font-title-size="32"
+        data-title="Refrigerator Temp"
+        data-font-units-size="28"
+        data-units="Degrees F"
+        data-font-numbers-size="24"
+        data-minor-ticks="10"
+        data-value="0"
+        data-min-value="-20"
+        data-max-value="80"
+        data-major-ticks="-20, 0, 20, 40, 60, 80"
+        data-value-dec="0"
+        data-highlights='[
+            {"from": -20, "to": 34, "color": "blue"},
+            {"from": 34, "to": 40, "color": "green"},
+            {"from": 40, "to": 80, "color": "yellow"}
+        ]'
+        data-tick-side="right"
+        data-number-side='right'
+        data-needle-side="right"
+        data-animation="false"
+        data-bar-stroke-width="0"
+        data-value-box-border-radius="0"
+        data-value-text-shadow="false"
+        data-value-box="false"
+        ></canvas>
+  </div> 
+    
+<div class="btn">
+    <button id="settings" style="background-color:transparent; border-color:transparent;"> 
+    <img src= "settings-icon.png" onclick="window.open('settings.html', '_self');" height="35"></button>    
+</div>
+
+<div id="cluster3" class="absolute">
+    <label for="Compressor">Compressor</label>
+	<button id="Compressor">Off</button>
+</div>
+<div id="cluster4" class="absolute">
+    <label for="Fan" >Fan</label>
+	<button id="Fan">Off</button>
+</div>    
+<div id="cluster5" class="absolute">
+     <label for="Humid" >Humidity</label>
+	<button id="Humid">100</button>
+</div>    
+
+<div id="cluster1" class="absolute">
+</div>  
+
+
+
+<script>
+const refTable = {
+    fzt: "Freezer Temp",
+    rft: "Refrigerator Temp",
+	rfh: "Humid",
+    co: "Compressor",
+    fo: "Fan",
+    fzts: "FreezerSetTemp",
+    rfts: "ReferSetTemp",
+};
+
+const mapTable = (intake) => refTable[intake] || "NaN";
+
+var w = window.innerWidth;
+var h = window.innerHeight;
+if ((w < 480) || (h < 480))
+{
+    console.log("Browser window is too small");
+}
+
+function setGaugeValue(name, newValue) {
+    //console.log("Search:", name);
+    document.gauges.forEach(function(gauge) {
+		if (gauge.options.title == name) {  
+			//console.log("Found: ", name);
+			//console.log("Setting value:", newValue);
+			if ((newValue <= gauge.options.maxValue) &&
+				(newValue >= gauge.options.minValue)) {
+					gauge.value = newValue;
+			} else {
+				if 	(newValue < gauge.options.minValue) {
+					gauge.value = gauge.options.minValue;
+				}
+				else if (newValue > gauge.options.maxValue) {
+					gauge.value = gauge.options.maxValue;
+				}
+            }
+        }
+    });
+};
+
+function setHTMLValue(name, newValue) {
+    //console.log("Name: ", name); 
+    //console.log("Value: ", newValue); 
+	const el = document.getElementById(name);
+	if ((el !== null) && (typeof el !== "undefined")) {
+		const oldText = el.text;
+		//console.log("OldText: ", oldText);
+		if ((oldText == "On") || (oldText == "Off") && 
+			(newValue == 0) || (newValue == 1)) {
+			newValue = "On";
+			if (newValue == 0) {
+				newValue = "Off";
+			}
+		}
+		el.text = newValue;		
+		el.innerText = newValue;		
+	} else {
+		console.log("Document Element not found: ", name);
+	}
+}
+
+setInterval(function() {
+    fetch('http://%IPADDRESS%/api', 
+    {
+      method: "GET",
+      headers: {
+                "x-api-key": "69c45815-ca2e-45e5-a2ea-e07aafb37595"
+      }
+    })
+    .then((response) => {
+      response.json().then((jsonResponse) => {
+        console.log(jsonResponse); 
+        Object.entries(jsonResponse).forEach(([key, value]) => {
+			if ((key == "fzt") || (key == "rft")) {
+				setGaugeValue(mapTable(key), value);
+			} else {
+				setHTMLValue(mapTable(key), value);
+			}
+        })
+    })
+    .catch((err) => {
+		console.log(err);
+		document.gauges.forEach(function(gauge) {
+			gauge.value = gauge.options.minValue;
+			}
+		)
+	})
+	});
+/*
+    document.gauges.forEach(function(gauge) {
+            if (gauge.options.title == "Voltage")
+            {  
+              //console.log("Found Tach");
+              gauge.value = Math.random() *
+                    (gauge.options.maxValue - gauge.options.minValue) +
+                    gauge.options.minValue;
+            }
+            else
+            {            
+                //console.log(gauge.options.title);
+                gauge.value = parseInt(Math.random() *
+                    (gauge.options.maxValue - gauge.options.minValue) +
+                    gauge.options.minValue);
+            }
+    });
+*/    
+  }, 1 * 1000);
+
+</script>
+<script async src="gauge.min.js"></script>
+
+</body>
+</html>
